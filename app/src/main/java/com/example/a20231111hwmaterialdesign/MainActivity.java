@@ -5,15 +5,19 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
 
+
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,35 +25,38 @@ public class MainActivity extends AppCompatActivity {
 
         Bitmap image0 = BitmapFactory.decodeResource(getResources(), R.drawable.malina);
         Bitmap image1 = BitmapFactory.decodeResource(getResources(), R.drawable.uzi);
+        byte [] bytes0 = DbBitmapUtility.getBytes(image0);
+        byte [] bytes1 = DbBitmapUtility.getBytes(image1);
+        Album album0 = new Album("Helltaker", "Mittsies",  bytes0, 2020);
+        Album album1 = new Album("Murder Drones soundtrack", "Aj DiSpirito", bytes1, 2021);
 
-        ArrayList<Album> albums = new ArrayList();
-        albums.add(new Album("Title", "Artist",  DbBitmapUtility.getBytes(image0), 1999));
-        albums.add(new Album("Title", "Artist",  DbBitmapUtility.getBytes(image1), 1999));
-        CustomAdapter customAdapter;
-        customAdapter = new CustomAdapter(albums);
+        Album.deleteAll(Album.class);
 
-        RecyclerView rv = findViewById(R.id.rv);
-        rv.setHasFixedSize(true);
+            album0.save();
+            album1.save();
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        rv.setLayoutManager(layoutManager);
+        List<Album> albums = Album.listAll(Album.class);
 
 
-        rv.setAdapter(customAdapter);
-//        rv.invalidate();
 
 
-        /**
-         *   I have to use:
-         **     Recycler View,
-         **     CardView,
-         **     NavigationView,
-         **     CoordinatorLayout.
-         *   I must store pictures in bitmaps. I have done the
-         database part, I need to deal with bitmaps themselves.
-         ** I could use some support now.
-        **/
+            CustomAdapter customAdapter;
+            customAdapter = new CustomAdapter(albums);
+
+            RecyclerView rv = findViewById(R.id.rv);
+            rv.setHasFixedSize(true);
+
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+            layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            rv.setLayoutManager(layoutManager);
+
+
+            rv.setAdapter(customAdapter);
+
+
+
+
+
 
     }
 }

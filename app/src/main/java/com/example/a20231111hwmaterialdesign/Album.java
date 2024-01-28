@@ -1,6 +1,8 @@
 package com.example.a20231111hwmaterialdesign;
 
 import com.orm.SugarRecord;
+import androidx.annotation.NonNull;
+
 
 import java.sql.Blob;
 import java.sql.SQLException;
@@ -35,5 +37,10 @@ public class Album extends SugarRecord<Album> {
 
     public int getYear() {
         return year;
+    }
+    @NonNull
+    @Override
+    public String toString() {
+        return title;
     }
 }
