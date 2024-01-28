@@ -66,7 +66,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.AlbumViewH
         viewHolder.title.setText(albums.get(position).getTitle());
         viewHolder.artist.setText(albums.get(position).getArtist());
         viewHolder.year.setText(""+albums.get(position).getYear());
-        //viewHolder.image.setImageResource(albums.get(position).getImage());
+        viewHolder.image.setImageBitmap(DbBitmapUtility.getImage(albums.get(position).getImage()));
     }
 
     // Return the size of your dataset (invoked by the layout manager)
