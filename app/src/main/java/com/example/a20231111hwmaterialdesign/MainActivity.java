@@ -1,19 +1,23 @@
 package com.example.a20231111hwmaterialdesign;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.res.ResourcesCompat;
+import android.app.Activity;
+import android.graphics.Point;
+
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
-import java.util.ArrayList;
+import com.google.android.material.navigation.NavigationView;
+
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
 
 
@@ -23,8 +27,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Bitmap image0 = BitmapFactory.decodeResource(getResources(), R.drawable.malina);
-        Bitmap image1 = BitmapFactory.decodeResource(getResources(), R.drawable.uzi);
+        Point outSz = new Point();
+        //noinspection deprecation
+        getWindowManager().getDefaultDisplay().getSize(outSz);
+        Bitmap image0 = DbBitmapUtility.retrieveResource(getApplication(), R.drawable.malina, outSz);
+        Bitmap image1 = DbBitmapUtility.retrieveResource(getApplication(), R.drawable.uzi, outSz);
         byte [] bytes0 = DbBitmapUtility.getBytes(image0);
         byte [] bytes1 = DbBitmapUtility.getBytes(image1);
         Album album0 = new Album("Helltaker", "Mittsies",  bytes0, 2020);
@@ -37,13 +44,10 @@ public class MainActivity extends AppCompatActivity {
 
         List<Album> albums = Album.listAll(Album.class);
 
-
-
-
             CustomAdapter customAdapter;
             customAdapter = new CustomAdapter(albums);
 
-            RecyclerView rv = findViewById(R.id.rv);
+            RecyclerView rv = (RecyclerView) findViewById(R.id.rv);
             rv.setHasFixedSize(true);
 
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -54,9 +58,31 @@ public class MainActivity extends AppCompatActivity {
             rv.setAdapter(customAdapter);
 
 
-
-
-
-
+        Menu m = ((NavigationView) findViewById(R.id.navigation)).getMenu();
+        m.findItem(R.id.nav_sort_title).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem item) {
+                customAdapter.sortByTitle();
+                rv.setAdapter(customAdapter);
+                return true;
+            }
+        });
+        m.findItem(R.id.nav_sort_artist).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem item) {
+                customAdapter.sortByArtist();
+                rv.setAdapter(customAdapter);
+                    return true;
+            }
+        });
+        m.findItem(R.id.nav_sort_year).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem item) {
+                customAdapter.sortByArtist();
+                rv.setAdapter(customAdapter);
+                return true;
+            }
+        });
     }
+
 }

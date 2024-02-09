@@ -1,6 +1,7 @@
 package com.example.a20231111hwmaterialdesign;
 
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,11 +30,11 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.AlbumViewH
         public AlbumViewHolder(View view) {
             super(view);
 
-            cv = view.findViewById(R.id.cv);
-            title = view.findViewById(R.id.title);
-            artist = view.findViewById(R.id.artist);
-            year = view.findViewById(R.id.year);
-            image = view.findViewById(R.id.image);
+            cv = (CardView) view.findViewById(R.id.cv);
+            title = (TextView) view.findViewById(R.id.title);
+            artist = (TextView) view.findViewById(R.id.artist);
+            year = (TextView) view.findViewById(R.id.year);
+            image = (ImageView) view.findViewById(R.id.image);
         }
     }
 
@@ -53,11 +54,11 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.AlbumViewH
         // Create a new view, which defines the UI of the list item
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.cardview_item, viewGroup, false);
-        AlbumViewHolder avh = new AlbumViewHolder(view);
-        return avh;
+        return new AlbumViewHolder(view);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
+    @SuppressLint("DefaultLocale")
     @Override
     public void onBindViewHolder(AlbumViewHolder viewHolder, final int position) {
 
@@ -65,7 +66,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.AlbumViewH
         // contents of the view with that element
         viewHolder.title.setText(albums.get(position).getTitle());
         viewHolder.artist.setText(albums.get(position).getArtist());
-        viewHolder.year.setText(""+albums.get(position).getYear());
+        viewHolder.year.setText(String.format("%d", albums.get(position).getYear()));
         viewHolder.image.setImageBitmap(DbBitmapUtility.getImage(albums.get(position).getImage()));
     }
 
@@ -78,6 +79,38 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.AlbumViewH
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView){
         super.onAttachedToRecyclerView(recyclerView);
+    }
+
+
+    public void sortByTitle(){
+            for(int i = 0; i<albums.size()-1; ++i){
+                if( albums.get(i).getTitle().compareTo(albums.get(i+1).getTitle()) > 0) {
+                    Album first = albums.get(i);
+                    albums.set(i, albums.get(i+1));
+                    albums.set(i + 1, first);
+                    sortByTitle();
+                }
+            }
+    }
+    public void sortByArtist(){
+        for(int i = 0; i<albums.size()-1; ++i){
+            if( albums.get(i).getArtist().compareTo(albums.get(i+1).getArtist()) > 0) {
+                Album first = albums.get(i);
+                albums.set(i, albums.get(i + 1));
+                albums.set(i + 1, first);
+                sortByArtist();
+            }
+        }
+    }
+    public void sortByYear(){
+        for(int i = 0; i<albums.size()-1; ++i){
+            if( albums.get(i).getYear() > albums.get(i+1).getYear()) {
+                Album first = albums.get(i);
+                albums.set(i, albums.get(i + 1));
+                albums.set(i + 1, first);
+                sortByYear();
+            }
+        }
     }
 }
 

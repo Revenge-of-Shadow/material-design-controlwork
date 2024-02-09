@@ -2,12 +2,13 @@ package com.example.a20231111hwmaterialdesign;
 
 import com.orm.SugarRecord;
 import androidx.annotation.NonNull;
+import com.orm.util.SugarCursorFactory;
 
 
 import java.sql.Blob;
 import java.sql.SQLException;
 
-public class Album extends SugarRecord<Album> {
+public class Album extends SugarRecord {
     private String title;
     private String artist;
     private byte[] image;
@@ -42,5 +43,13 @@ public class Album extends SugarRecord<Album> {
     @Override
     public String toString() {
         return title;
+    }
+
+    @Override
+    public long save() {
+        if(image != null) {
+            SugarCursorFactory.adjustWindowSize(image.length);
+        }
+        return super.save();
     }
 }
